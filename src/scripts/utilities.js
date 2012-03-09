@@ -9,7 +9,7 @@ ELUtils.time = ELUtils.date || {}
 	var d = new Date();
 	
 	ELUtils.dateMethods = {
-	
+	 
 		// Get the name of the current month
 		getCurrentMonth: function() {
 			var month = new Array();
@@ -80,6 +80,12 @@ ELUtils.time = ELUtils.date || {}
 		readCookie: function(name) {
 
 		}
+		
+		//Update a Cookie
+		readCookie: function(name) {
+
+		}
+		
 	}
 
 //***************************************//
@@ -115,14 +121,14 @@ ELUtils.time = ELUtils.date || {}
 			return queryStringArray;
 		},
 
-		// Get query string name from url (extends ELUtils.splitQueryString)
+		// Get query string name from url
 		getQueryStringName: function() {
 			var queryStringArray = this.splitQueryString();
 			var queryStringName = queryStringArray[0].replace("?", "");
 			return queryStringName;
 		},
 
-		// Get query string value from url (extends ELUtils.splitQueryString)
+		// Get query string value from url
 		getQueryStringValue: function() {
 			var queryStringArray = this.splitQueryString();
 			var queryStringValue = queryStringArray[1];
@@ -131,6 +137,24 @@ ELUtils.time = ELUtils.date || {}
 	
 	}
 
+//***************************************//
+
+// Currency Methods //
+//***************************************//
+
+	ELUtils.currencyMethods = {
+	
+		// Display dollar amount from a number
+		numberToCurrency: function(number) {
+			var number = number.toString();
+			dollars = number.split(".")[0];
+			cents = (number.split(".")[1] || "") + "00";
+			dollars = dollars.split("").reverse().join("").replace(/(\d{3}(?!$))/g, '$1,').split("").reverse().join("");
+		return "$" + dollars + "." + cents.slice(0,2);
+		}
+		
+	}
+	
 //***************************************//
 
 window.ELUtils = ELUtils;
