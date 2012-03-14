@@ -1,161 +1,170 @@
-(function () {
-var ELUtils = window.ELUtils || {};
+(function (WIN, DOC) {
+	"use strict";
 
-ELUtils.time = ELUtils.date || {}
+	var ELUtils = WIN.ELUtils || {},
 
-// Date Methods //
-//***************************************//
-	
-	var d = new Date();
-	
-	ELUtils.dateMethods = {
-	 
+		dateMethods = (function () {
+
+			var month = [	"January",
+							"February",
+							"March",
+							"April",
+							"May",
+							"June",
+							"July",
+							"August",
+							"September",
+							"October",
+							"November",
+							"December"	],
+				d = new Date(),
+				dateIns = null;
+
+			function refreshDate() {
+				d = new Date();
+			}
+
+			function DateInstance(dateInMS) {
+				var d = this;
+				if (!d instanceof DateInstance) {
+					d = new this;
+				}
+				d.lastName = "wolvine";
+
+				return d;
+			}
+			DateInstance.prototype.getCurrentMonth = function () {
+				var monthName = month[this.now.getMonth()];
+				return monthName;
+			};
+
 		// Get the name of the current month
-		getCurrentMonth: function() {
-			var month = new Array();
-			month[0]="January";
-			month[1]="February";
-			month[2]="March";
-			month[3]="April";
-			month[4]="May";
-			month[5]="June";
-			month[6]="July";
-			month[7]="August";
-			month[8]="September";
-			month[9]="October";
-			month[10]="November";
-			month[11]="December";
-			
-			var monthName = month[d.getMonth()];
-			
-			return monthName;
+			DateInstance.getCurrentMonth = function () {
+				refreshDate();
+				var monthName = month[d.getMonth()];
+				return monthName;
+			};
+					// Get the name of the current day
+			DateInstance.getDay = function () {
+				refreshDate();
+				var day = [	"Sunday",
+							"Monday",
+							"Tuesday",
+							"Wednesday",
+							"Thursday",
+							"Friday",
+							"Saturday" ],
+					dayName = day[d.getDay()];
+
+				return dayName;
+			};
+
+			return DateInstance;
+
+		}()),
+
+
+		timeMethods = {
+			convertSecondsToHours : function (seconds) {
+				if (!seconds) {
+					return 0;
+				}
+				var secsInHour = 60 * 60,
+					strBuilder = [];
+				strBuilder.push(Math.floor(seconds / secsInHour) + ' hours');
+				strBuilder.push(Math.floor((seconds % secsInHour) / 60) + ' minutes');
+				strBuilder.push((seconds % secsInHour) % 60 + ' seconds');
+
+				return strBuilder.join(' ');
+			}
 		},
-		
-		// Get the name of the current day
-		getDay: function() {
-			var day = new Array();
-			day[0] = "Sunday";
-			day[1] = "Monday";
-			day[2] = "Tuesday";
-			day[3] = "Wednesday";
-			day[4] = "Thursday";
-			day[5] = "Friday";
-			day[6] = "Saturday";
-			
-			var dayName = day[d.getDay()]
-			
-			return dayName
-		}
-	
-	}
 
-// Time Methods //
-//***************************************//
+		cookieMethods = {
 
-	// Convert seconds into hours ~ Rich Hamburg
-	ELUtils.time.convertSecondsToHours = function (seconds) {
-		if (!seconds) return 0;
-		var secsInHour = 60*60;
-		return (Math.floor(seconds/secsInHour) + ' hours ' + Math.floor((seconds%secsInHour)/60) + ' minutes ' + (seconds%secsInHour)%60 + ' seconds');            
-	}
+		// Set a Cookie
+			setCookie: function (name, value, exdays) {
+				var exdate = new Date(),
+					cookieValue;
+				exdate.setDate(exdate.getDate() + exdays);
+				cookieValue = WIN.escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
+				DOC.cookie = name + "=" + cookieValue;
+				return DOC.cookie;
+			},
 
-//***************************************//
+			//Read a Cookie
+			readCookie: function (name) {
 
+			},
 
-// Cookie Methods //
-//***************************************//
+			//Update a Cookie
+			updateCookie : function (name) {
 
-	ELUtils.cookieMethods = {
-	
-		// Set a Cookie 
-		setCookie: function(name, value, exdays) {
-			var exdate = new Date();
-			exdate.setDate(exdate.getDate() + exdays);
-			var cookieValue = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-			document.cookie = name + "=" + cookieValue;
-			return document.cookie;
+			}
+
 		},
-		
-		//Read a Cookie
-		readCookie: function(name) {
 
-		}
-		
-		//Update a Cookie
-		readCookie: function(name) {
+		url = WIN.location,
 
-		}
-		
-	}
-
-//***************************************//
-
-
-// PARSE URL Methods //
-//***************************************//
-
-	var url = window.location;
-	
-	ELUtils.parseURLMethods = {
+		urlMethods = {
 
 		// Get hash tag from url
-		getHashTagfromUrl: function() {
-			var hashValue = url.hash.replace("#", "");
-			if(url.hash) {
-				return hashValue;
+			getHashTagfromUrl: function () {
+				var hashValue = url.hash.replace("#", "");
+				if (url.hash) {
+					return hashValue;
+				}
+			},
+
+			// Get query string from url
+			getQueryString : function () {
+				var queryStrValue = url.search;
+				if (queryStrValue) {
+					return queryStrValue;
+				}
+			},
+
+			// Turn query string into an array
+			splitQueryString : function () {
+				var queryString = this.getQueryString(),
+					queryStringArray = queryString.split("=");
+				return queryStringArray;
+			},
+
+			// Get query string name from url
+			getQueryStringName : function () {
+				var queryStringArray = this.splitQueryString(),
+					queryStringName = queryStringArray[0].replace("?", "");
+				return queryStringName;
+			},
+
+			// Get query string value from url
+			getQueryStringValue : function () {
+				var queryStringArray = this.splitQueryString(),
+					queryStringValue = queryStringArray[1];
+				return queryStringValue;
 			}
+
 		},
 
-		// Get query string from url
-		getQueryString:function() {
-			var queryStrValue = url.search;
-			if (queryStrValue) {
-				return queryStrValue;
+		currencyMethods = {
+
+			// Display dollar amount from a number
+			numberToCurrency : function (number_) {
+				var number = number_.toString(),
+					dollars = number.split(".")[0],
+					cents = (number.split(".")[1] || "") + "00";
+				dollars = dollars.split("").reverse().join("").replace(/(\d{3}(?!$))/g, '$1,').split("").reverse().join("");
+				return "$" + dollars + "." + cents.slice(0, 2);
 			}
-		},
 
-		// Turn query string into an array
-		splitQueryString: function() {
-			var queryString = this.getQueryString();
-			var queryStringArray = queryString.split("=");
-			return queryStringArray;
-		},
-
-		// Get query string name from url
-		getQueryStringName: function() {
-			var queryStringArray = this.splitQueryString();
-			var queryStringName = queryStringArray[0].replace("?", "");
-			return queryStringName;
-		},
-
-		// Get query string value from url
-		getQueryStringValue: function() {
-			var queryStringArray = this.splitQueryString();
-			var queryStringValue = queryStringArray[1];
-			return queryStringValue;
-		}
-	
-	}
+		};
 
 //***************************************//
 
-// Currency Methods //
-//***************************************//
+	WIN.ELUtils = {
+		date : dateMethods,
+		cookie : cookieMethods,
+		money : currencyMethods
+	};
 
-	ELUtils.currencyMethods = {
-	
-		// Display dollar amount from a number
-		numberToCurrency: function(number) {
-			var number = number.toString();
-			dollars = number.split(".")[0];
-			cents = (number.split(".")[1] || "") + "00";
-			dollars = dollars.split("").reverse().join("").replace(/(\d{3}(?!$))/g, '$1,').split("").reverse().join("");
-		return "$" + dollars + "." + cents.slice(0,2);
-		}
-		
-	}
-	
-//***************************************//
-
-window.ELUtils = ELUtils;
-}());
+}(this, this.document));
