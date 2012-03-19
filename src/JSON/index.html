@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	<head>
+		<title>EmpathyLab Utilities</title>	
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>		
+	</head>
+	<body>
+		<h2>JSON Project 1</h2>
+		<a href="scripts/response.json" id="json-test-link">Test JSON Link</a>
+		<div class="message"></div>
+		<hr></hr>
+		<h2>JSON Project 2</h2>
+		<a href="scripts/response.json" id="json-test-link2">Test JSON Link2</a>
+		<div class="message2"></div>
+		<hr></hr>
+		<div class="example-three">
+			<h2>JSON Project 3</h2>
+			<a href="scripts/response6.json" class="json-test-link3" id="json3">Test JSON Link3</a>
+			<div class="message3"></div>
+		</div>
+	<script type="text/javascript">
+			$(document).ready(function() {
+			
+				// JS Project Example 1
+				$("#json-test-link").click(function() {
+					var url = $(this).attr("href");
+					$.getJSON(url, function(data) {
+						$(".message").html("<em>" + data.firstName + "</em> " + data.lastName);
+					});
+					return false;
+				});
+				
+				// JS Project Example 2
+				$("#json-test-link2").click(function() {
+					var url = $(this).attr("href");
+					$.getJSON(url, function(data) {
+						$(".message2").html("<em>" + data.firstName + "</em> " + data.lastName);
+						$("#json-test-link2").attr("href", data.href); 
+					});
+					return false;
+				});
+				
+				// JS Project Example 3
+				$(".json-test-link3").live("click", function(){
+					var url = $(this).attr("href");
+					$(".example-three ul").remove();
+					$.getJSON(url, function(data) {
+						$(".message3").html("<em>" + data.firstName + "</em> " + data.lastName);
+						$(".example-three").append("<ul></ul>");
+						$.each(data.links, function(i, item) {
+							$(".example-three ul").append('<li><a href=\'' + item.href + '\'' + 'class="json-test-link3">' + item.text + '</a></li>');
+						});
+						$("#json3").remove();
+					});
+					return false;
+				});
+
+			});
+	</script>
+	</body>
+</html>
