@@ -33,18 +33,20 @@
 
 				return d;
 			}
+			
 			DateInstance.prototype.getCurrentMonth = function () {
 				var monthName = month[this.now.getMonth()];
 				return monthName;
 			};
 
-		// Get the name of the current month
+			// Get the name of the current month
 			DateInstance.getCurrentMonth = function () {
 				refreshDate();
 				var monthName = month[d.getMonth()];
 				return monthName;
 			};
-					// Get the name of the current day
+			
+			// Get the name of the current day
 			DateInstance.getDay = function () {
 				refreshDate();
 				var day = [	"Sunday",
@@ -79,72 +81,91 @@
 			}
 		},
 
-		cookieMethods = {
+		cookieMethods =(function () {
+		
+			function CookieInstance(cookie) {
+				if (!cookie) {
+					setCookie();
+				} else {
+					return cookie;
+				}
+			};
 
-		// Set a Cookie
-			setCookie: function (name, value, exdays) {
+			// Set a Cookie
+			CookieInstance.setCookie = function (name, value, exdays) {
 				var exdate = new Date(),
 					cookieValue;
 				exdate.setDate(exdate.getDate() + exdays);
 				cookieValue = WIN.escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
 				DOC.cookie = name + "=" + cookieValue;
+				
 				return DOC.cookie;
-			},
+			};
 
 			//Read a Cookie
-			readCookie: function (name) {
+			CookieInstance.readCookie = function () {
 
-			},
+			};
 
 			//Update a Cookie
-			updateCookie : function (name) {
+			CookieInstance.updateCookie = function () {
 
+			};
+			
+			return CookieInstance;
+
+		}()),
+
+		urlMethods = (function () {
+
+			var href = WIN.location;
+			
+			function UrlInstance() {
+				return href;
 			}
-
-		},
-
-		url = WIN.location,
-
-		urlMethods = {
-
-		// Get hash tag from url
-			getHashTagfromUrl: function () {
-				var hashValue = url.hash.replace("#", "");
-				if (url.hash) {
+			
+			// Get hash tag from url
+			UrlInstance.getHashTagfromUrl = function () {
+				var hashValue = href.hash.replace("#", "");
+				if (href.hash) {
 					return hashValue;
+				} else {
+					return "";
 				}
-			},
+			};
 
 			// Get query string from url
-			getQueryString : function () {
-				var queryStrValue = url.search;
+			UrlInstance.getQueryString = function () {
+				var queryStrValue = href.search;
 				if (queryStrValue) {
 					return queryStrValue;
 				}
-			},
+			};
 
 			// Turn query string into an array
-			splitQueryString : function () {
+			UrlInstance.splitQueryString = function () {
 				var queryString = this.getQueryString(),
 					queryStringArray = queryString.split("=");
 				return queryStringArray;
-			},
+			};
 
 			// Get query string name from url
-			getQueryStringName : function () {
+			UrlInstance.getQueryStringName = function () {
 				var queryStringArray = this.splitQueryString(),
 					queryStringName = queryStringArray[0].replace("?", "");
 				return queryStringName;
-			},
+			};
 
 			// Get query string value from url
-			getQueryStringValue : function () {
+			UrlInstance.getQueryStringValue = function () {
 				var queryStringArray = this.splitQueryString(),
 					queryStringValue = queryStringArray[1];
 				return queryStringValue;
-			}
+			};
+			
+			return UrlInstance;
 
-		},
+		}()),
 
 		currencyMethods = {
 
@@ -164,7 +185,9 @@
 	WIN.ELUtils = {
 		date : dateMethods,
 		cookie : cookieMethods,
-		money : currencyMethods
+		money : currencyMethods,
+		time : timeMethods,
+		url : urlMethods
 	};
 
 }(this, this.document));
