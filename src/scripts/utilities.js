@@ -27,13 +27,13 @@
 			function DateInstance(dateInMS) {
 				var d = this;
 				if (!d instanceof DateInstance) {
-					d = new this;
+					d = new this();
 				}
 				d.lastName = "wolvine";
 
 				return d;
 			}
-			
+
 			DateInstance.prototype.getCurrentMonth = function () {
 				var monthName = month[this.now.getMonth()];
 				return monthName;
@@ -45,7 +45,7 @@
 				var monthName = month[d.getMonth()];
 				return monthName;
 			};
-			
+
 			// Get the name of the current day
 			DateInstance.getDay = function () {
 				refreshDate();
@@ -81,15 +81,17 @@
 			}
 		},
 
-		cookieMethods =(function () {
-		
+		cookieMethods = (function () {
+			var setCookie,
+				getCookie;
+
 			function CookieInstance(cookie) {
-				if (!cookie) {
-					setCookie();
-				} else {
+				if (cookie) {
 					return cookie;
+				} else {
+					return null;
 				}
-			};
+			}
 
 			// Set a Cookie
 			CookieInstance.setCookie = function (name, value, exdays) {
@@ -98,32 +100,45 @@
 				exdate.setDate(exdate.getDate() + exdays);
 				cookieValue = WIN.escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
 				DOC.cookie = name + "=" + cookieValue;
-				
 				return DOC.cookie;
 			};
 
-			//Read a Cookie
-			CookieInstance.readCookie = function () {
+			//Retrieve a Cookie
+			CookieInstance.getCookie = function (cName) {
+				var begin,
+					end;
 
+				if (DOC.cookie.length > 0) {
+					begin = DOC.cookie.indexOf(cName + "=");
+					if (begin !== -1) {
+						begin += cName.length + 1;
+						end = DOC.cookie.indexOf(";", begin);
+						if (end === -1) {
+							end = DOC.cookie.length;
+						}
+						return unescape(DOC.cookie.substring(begin, end));
+					}
+					return null;
+				}
 			};
 
-			//Update a Cookie
-			CookieInstance.updateCookie = function () {
-
+			//Delete a Cookie
+			CookieInstance.deleteCookie = function (cName) {
+				if (this.getCookie(cName)) {
+					DOC.cookie = cName + "=" + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+				}
 			};
-			
+
 			return CookieInstance;
 
 		}()),
 
 		urlMethods = (function () {
-
 			var href = WIN.location;
-			
 			function UrlInstance() {
 				return href;
 			}
-			
+
 			// Get hash tag from url
 			UrlInstance.getHashTagfromUrl = function () {
 				var hashValue = href.hash.replace("#", "");
@@ -138,6 +153,7 @@
 			UrlInstance.getQueryString = function () {
 				var queryStrValue = href.search;
 				if (queryStrValue) {
+					console.log(queryStrValue);
 					return queryStrValue;
 				}
 			};
@@ -146,6 +162,7 @@
 			UrlInstance.splitQueryString = function () {
 				var queryString = this.getQueryString(),
 					queryStringArray = queryString.split("=");
+				console.log(queryStringArray);
 				return queryStringArray;
 			};
 
@@ -162,9 +179,7 @@
 					queryStringValue = queryStringArray[1];
 				return queryStringValue;
 			};
-			
 			return UrlInstance;
-
 		}()),
 
 		currencyMethods = {
@@ -180,7 +195,7 @@
 
 		};
 
-//***************************************//
+//***************************************// 
 
 	WIN.ELUtils = {
 		date : dateMethods,
