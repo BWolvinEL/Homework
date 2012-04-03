@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html>
 	<head>
 		<title>EmpathyLab Utilities</title>	
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<script type="text/javascript" src="scripts/utilities.js"></script>   
+		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-git.css" >
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="http://code.jquery.com/qunit/qunit-git.js"></script>
+		<script type="text/javascript" src="scripts/utilities.js"></script>  
+		<script type="text/javascript" src="../src-test/scripts/DateMethods/date.js"></script>
+		<script type="text/javascript" src="../src-test/scripts/MoneyMethods/money.js"></script>
 	</head>
 	<body>
-		<a href="?email=someone@example.com">Test Link</a>
+		
+	<div id="qunit"></div>
+	<div id="qunit-fixture">test markup</div>
 
-	<script type="text/javascript">
 
-		//Tests for Methods go here
-		ELUtils.cookie.setCookie("FirstName", "Brandon")
-
+	<script>
+		// ELTest.runDateTests();
+		ELTest.runMoneyTests();
 	</script>
 	</body>
 </html>
